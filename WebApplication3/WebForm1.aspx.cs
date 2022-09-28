@@ -102,8 +102,7 @@ namespace WebApplication2
             else
             {
                 highlight(data, rackno, fileName);
-                showMessage.Text = "Can find your Product in this given Rack no and you can check its category where you can find in the store. ";
-                showMessage.Visible = true;
+                
             }
 
         }
@@ -192,44 +191,56 @@ namespace WebApplication2
 
                 // Create a highlight annotation
                 page.Accept(textFragmentAbsorber);
-                HighlightAnnotation ha = new HighlightAnnotation(page, textFragmentAbsorber.TextFragments[1].Rectangle);
-                TextFragmentCollection textFragmentCollection = textFragmentAbsorber.TextFragments;
-
-                foreach (TextFragment textFragment in textFragmentCollection)
+                if (textFragmentAbsorber.TextFragments.Count > 0)
                 {
-                    txtX = textFragment.Position.XIndent;
-                    txtY = textFragment.Position.YIndent;
-                }
-                // Specify highlight color 
-                ha.Color = Color.Yellow;
-                // Add annotation to highlight text in PDF 
-                page.Annotations.Add(ha);
-                using (FileStream imageStream = new FileStream(@"\\filesrvr\genptdata\users\pctr0068480\VDI Downloads\WebApplication3-master\WebApplication3-master\WebApplication3\data\logo1.png", FileMode.Open))
-                {
-                    // Add image to Images collection of Page Resources
-                    page.Resources.Images.Add(imageStream);
-                    // Using GSave operator: this operator saves current graphics state
-                    page.Contents.Add(new Aspose.Pdf.Operators.GSave());
-                    //Coordinate of the starting letter(x, y)(450, 100)
-                    //àStarting point of the pin(LLX, LLY)->x - 20,y + 20
-                    //àSize(Square)(URX, URY)->LLX + 50,LLY + 50
-                    double lowerLeftX = txtX - 30;
-                    double lowerLeftY = txtY;
-                    double upperRightX = lowerLeftX + 30;
-                    double upperRightY = lowerLeftY + 30;
-                    // Create Rectangle and Matrix objects
-                    Aspose.Pdf.Rectangle rectangle = new Aspose.Pdf.Rectangle(lowerLeftX, lowerLeftY, upperRightX, upperRightY);
-                    Matrix matrix = new Matrix(new double[] { rectangle.URX - rectangle.LLX, 0, 0, rectangle.URY - rectangle.LLY, rectangle.LLX, rectangle.LLY });
-                    // Using ConcatenateMatrix (concatenate matrix) operator: defines how image must be placed
-                    page.Contents.Add(new Aspose.Pdf.Operators.ConcatenateMatrix(matrix));
-                    XImage ximage = page.Resources.Images[page.Resources.Images.Count];
-                    // Using Do operator: this operator draws image
-                    page.Contents.Add(new Aspose.Pdf.Operators.Do(ximage.Name));
-                }
-                newDocument.Pages.Add(page);
-                // Save the document
-                newDocument.Save(@"\\filesrvr\genptdata\users\pctr0068480\VDI Downloads\WebApplication3-master\WebApplication3-master\WebApplication3\data\highlight1.pdf");
 
+
+                    HighlightAnnotation ha = new HighlightAnnotation(page, textFragmentAbsorber.TextFragments[1].Rectangle);
+                    TextFragmentCollection textFragmentCollection = textFragmentAbsorber.TextFragments;
+
+                    foreach (TextFragment textFragment in textFragmentCollection)
+                    {
+                        txtX = textFragment.Position.XIndent;
+                        txtY = textFragment.Position.YIndent;
+                    }
+                    // Specify highlight color 
+                    ha.Color = Color.Yellow;
+                    // Add annotation to highlight text in PDF 
+                    page.Annotations.Add(ha);
+                    using (FileStream imageStream = new FileStream(@"C:\Users\pctr0068480\source\repos\New folder\Hackathon\WebApplication3\data\logo1.png", FileMode.Open))
+                    {
+                        // Add image to Images collection of Page Resources
+                        page.Resources.Images.Add(imageStream);
+                        // Using GSave operator: this operator saves current graphics state
+                        page.Contents.Add(new Aspose.Pdf.Operators.GSave());
+                        //Coordinate of the starting letter(x, y)(450, 100)
+                        //àStarting point of the pin(LLX, LLY)->x - 20,y + 20
+                        //àSize(Square)(URX, URY)->LLX + 50,LLY + 50
+                        double lowerLeftX = txtX - 30;
+                        double lowerLeftY = txtY;
+                        double upperRightX = lowerLeftX + 30;
+                        double upperRightY = lowerLeftY + 30;
+                        // Create Rectangle and Matrix objects
+                        Aspose.Pdf.Rectangle rectangle = new Aspose.Pdf.Rectangle(lowerLeftX, lowerLeftY, upperRightX, upperRightY);
+                        Matrix matrix = new Matrix(new double[] { rectangle.URX - rectangle.LLX, 0, 0, rectangle.URY - rectangle.LLY, rectangle.LLX, rectangle.LLY });
+                        // Using ConcatenateMatrix (concatenate matrix) operator: defines how image must be placed
+                        page.Contents.Add(new Aspose.Pdf.Operators.ConcatenateMatrix(matrix));
+                        XImage ximage = page.Resources.Images[page.Resources.Images.Count];
+                        // Using Do operator: this operator draws image
+                        page.Contents.Add(new Aspose.Pdf.Operators.Do(ximage.Name));
+                    }
+                    newDocument.Pages.Add(page);
+                    // Save the document
+                    newDocument.Save(@"C:\Users\pctr0068480\source\repos\New folder\Hackathon\WebApplication3\data\highlight1.pdf");
+                    showMessage.Text = "Can find your Product in this given Rack no and you can check its category where you can find in the store. ";
+                    showMessage.Visible = true;
+                }
+                else
+                {
+                    iframepdf.Visible = false;
+                    showMessage.Text = "Currently this product is not available. Please contact store invigilator for further inquiries";
+                    showMessage.Visible = true;
+                }
             }
 
         }
